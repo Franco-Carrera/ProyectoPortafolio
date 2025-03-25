@@ -1,0 +1,7 @@
+{
+  "errorMessage": {
+    "emailEmpty": "Indica una dirección de correo electrónico",
+    "recaptcha": "Tenemos problemas para verificar el reCAPTCHA de esta solicitud. Vuelve a intentarlo. Si el problema continúa, prueba con otro navegador o dispositivo, o contacta con el soporte de Atlassian.",
+    "invalidcredentials": "La dirección de correo electrónico o la contraseña son incorrectas. Si has migrado recientemente tu cuenta de Trello a una cuenta de Atlassian, tendrás que usar la contraseña de tu cuenta de Atlassian. También tienes la opción de pedir ayuda iniciando sesión."
+  }
+}
