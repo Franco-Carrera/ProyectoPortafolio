@@ -164,7 +164,7 @@ describe(" Module 001 | Login", () => {
     loginPage.findFormErrMsg().should("have.text", data.errorMessage.recaptcha);
   });
 
-  it.only("TC14: Validar NO iniciar sesión al ingresar el campo password con inyecciones SQL", () => {
+  it("TC14: Validar NO iniciar sesión al ingresar el campo password con inyecciones SQL", () => {
     loginPage.typeEmail(adminUserTwo);
     loginPage.sendCredential();
 
