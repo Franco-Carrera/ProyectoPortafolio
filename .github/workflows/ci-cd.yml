@@ -38,12 +38,11 @@ jobs:
           echo "BROKE_PASSWORD_TWO=${{ secrets.BROKE_PASSWORD_TWO }}" >> $GITHUB_ENV
           echo "BROKE_PASSWORD_THREE=${{ secrets.BROKE_PASSWORD_THREE }}" >> $GITHUB_ENV
 
-
       - name: 🚀 Ejecutar pruebas en Cypress
         run: npx cypress run
 
       - name: 📊 Guardar reportes de pruebas
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Cypress Reports
           path: cypress/reports
