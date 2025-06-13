@@ -23,3 +23,27 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+
+// Comando para crear un usuario de prueba
+Cypress.Commands.add("createTestUser", (email, password, name = "") => {
+  // Acceder al localStorage directamente
+  cy.window().then((win) => {
+    const usersJSON = win.localStorage.getItem("users") || "[]";
+    const users = JSON.parse(usersJSON);
+
+    // Verificar si ya existe
+    if (!users.some((user) => user.email === email)) {
+      const newUser = {
+        id: `cypress-${Date.now()}`,
+        name,
+        email,
+        password,
+      };
+      users.push(newUser);
+      win.localStorage.setItem("users", JSON.stringify(users));
+
+      // Disparar evento de storage para actualizar la UI
+      win.dispatchEvent(new Event("storage"));
+    }
+  });
+});

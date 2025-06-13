@@ -25,18 +25,10 @@ jobs:
       - name: 🔑 Configurar variables de entorno
         run: |
           echo "BASE_URL=${{ secrets.BASE_URL }}" >> $GITHUB_ENV
-          echo "ADMIN_USER=${{ secrets.ADMIN_USER }}" >> $GITHUB_ENV
-          echo "ADMIN_USER_TWO=${{ secrets.ADMIN_USER_TWO }}" >> $GITHUB_ENV
-          echo "ADMIN_PASS=${{ secrets.ADMIN_PASS }}" >> $GITHUB_ENV
-          echo "NOTEXIST_USER=${{ secrets.NOTEXIST_USER }}" >> $GITHUB_ENV
-          echo "BROKE_USER_ONE=${{ secrets.BROKE_USER_ONE }}" >> $GITHUB_ENV
-          echo "BROKE_USER_TWO=${{ secrets.BROKE_USER_TWO }}" >> $GITHUB_ENV
-          echo "BROKE_USER_THREE=${{ secrets.BROKE_USER_THREE }}" >> $GITHUB_ENV
-          echo "BROKE_USER_FOUR=${{ secrets.BROKE_USER_FOUR }}" >> $GITHUB_ENV
-          echo "BROKE_USER_SIX=${{ secrets.BROKE_USER_SIX }}" >> $GITHUB_ENV
-          echo "BROKE_PASSWORD_ONE=${{ secrets.BROKE_PASSWORD_ONE }}" >> $GITHUB_ENV
-          echo "BROKE_PASSWORD_TWO=${{ secrets.BROKE_PASSWORD_TWO }}" >> $GITHUB_ENV
-          echo "BROKE_PASSWORD_THREE=${{ secrets.BROKE_PASSWORD_THREE }}" >> $GITHUB_ENV
+          echo "NORMAL_USER=${{ secrets.NORMAL_USER }}" >> $GITHUB_ENV
+          echo "NORMAL_PASS=${{ secrets.NORMAL_PASS }}" >> $GITHUB_ENV
+          echo "SPECIAL_USER=${{ secrets.SPECIAL_USER }}" >> $GITHUB_ENV
+          echo "SPECIALUSER_PASS=${{ secrets.SPECIALUSER_PASS }}" >> $GITHUB_ENV
 
       - name: 🚀 Ejecutar pruebas en Cypress
         run: npx cypress run
