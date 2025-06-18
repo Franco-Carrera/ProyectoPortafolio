@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "npx cypress open --e2e -b electron"
+    "test": "npx cypress open --e2e -b electron",
+    "cypress": "cypress run --record --key 65e8f3b5-7ac7-4100-8d84-8f382ffd0d55 --spec"
   },
   "keywords": [],
   "author": "",

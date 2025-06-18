@@ -9,6 +9,7 @@ require("dotenv").config();
 //const numero = Math.floor(Math.random() * 1000);
 
 module.exports = defineConfig({
+  projectId: "qc94ar",
   e2e: {
     setupNodeEvents(on, config) {
       // implement node event listeners here
