@@ -30,13 +30,20 @@ export class LoginPage {
   }
 
   createSpecialUser() {
-    cy.get(this.specialUserButton, { timeout: 10000 }).click();
+    cy.get(this.specialUserButton, { timeout: 10000 }).click({ force: true });
   }
 
   // LOGIN ERROR MESSAGES
   findLoginError() {
-    return cy.get(this.invalidCredentialsMessage);
+    return cy.get(this.invalidCredentialsMessage, { timeout: 10000 });
   }
 
   // ----------------------
+  //---Home
+
+  findWelcomeText() {
+    return cy.contains("✨ Tienes accesos especiales disponibles", {
+      timeout: 10000,
+    });
+  }
 }

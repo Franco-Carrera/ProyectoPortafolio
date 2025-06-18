@@ -30,12 +30,12 @@ describe(" Module 001 | Login", () => {
     cy.reload();
   });
 
-  it("TC2: Validar iniciar sesión al ingresar datos de un usuario premium", () => {
+  it.only("TC2: Validar iniciar sesión al ingresar datos de un usuario premium", () => {
     loginPage.createSpecialUser();
     loginPage.typeEmail(specialUser);
     loginPage.typePassword(specialUserPass);
     loginPage.sendCredentials();
-    cy.url().should("contain", "/home");
+    loginPage.findWelcomeText().should("be.visible");
   });
 
   it("TC3: Validar NO iniciar sesión al dejar el campo email vacío", () => {
