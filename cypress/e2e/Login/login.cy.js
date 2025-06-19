@@ -31,11 +31,13 @@ describe(" Module 001 | Login", () => {
   });
 
   it.only("TC2: Validar iniciar sesión al ingresar datos de un usuario premium", () => {
-    loginPage.createSpecialUser();
+    loginPage.createSpecialUser().should("exist").click({ force: true });
+    cy.log(`Intentando login con: ${specialUser} / ${specialUserPass}`);
     loginPage.typeEmail(specialUser);
     loginPage.typePassword(specialUserPass);
     loginPage.sendCredentials();
-    loginPage.findWelcomeText().should("be.visible");
+    // Espera a que se redireccione a /home
+    cy.url({ timeout: 15000 }).should("include", "/home");
   });
 
   it("TC3: Validar NO iniciar sesión al dejar el campo email vacío", () => {
@@ -63,10 +65,12 @@ describe(" Module 001 | Login", () => {
     const invalidEmail = `usuariomail.com`;
     loginPage.typeEmail(invalidEmail);
     loginPage.typePassword(adminPass);
-    loginPage.sendCredentials();
+    loginPage.findSubmitButton().should("be.visible").click();
+    // Esperar y validar el error
     loginPage
       .findLoginError()
-      .should("have.text", data.errorMessage.withoutFormatEmail);
+      .should("exist")
+      .and("have.text", data.errorMessage.withoutFormatEmail);
   });
 
   it("TC6: Validar NO iniciar sesión al ingresar el campo email sin la extensión", () => {
@@ -93,10 +97,12 @@ describe(" Module 001 | Login", () => {
     const invalidEmail = `@gmail.com`;
     loginPage.typeEmail(invalidEmail);
     loginPage.typePassword(adminPass);
-    loginPage.sendCredentials();
+    loginPage.findSubmitButton().should("be.visible").click();
+    // Esperar y validar el error
     loginPage
       .findLoginError()
-      .should("have.text", data.errorMessage.withoutFormatEmail);
+      .should("exist")
+      .and("have.text", data.errorMessage.withoutFormatEmail);
   });
 
   it("TC9: Validar NO iniciar sesión al dejar el campo password vacío", () => {

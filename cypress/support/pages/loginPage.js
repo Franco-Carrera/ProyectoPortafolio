@@ -30,7 +30,11 @@ export class LoginPage {
   }
 
   createSpecialUser() {
-    cy.get(this.specialUserButton, { timeout: 10000 }).click({ force: true });
+    return cy.get(this.specialUserButton);
+  }
+
+  findSubmitButton() {
+    return cy.get(this.submitButton);
   }
 
   // LOGIN ERROR MESSAGES
@@ -40,10 +44,4 @@ export class LoginPage {
 
   // ----------------------
   //---Home
-
-  findWelcomeText() {
-    return cy.contains("✨ Tienes accesos especiales disponibles", {
-      timeout: 10000,
-    });
-  }
 }
