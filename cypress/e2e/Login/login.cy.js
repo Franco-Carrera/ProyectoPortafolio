@@ -30,7 +30,7 @@ describe(" Module 001 | Login", () => {
     cy.reload();
   });
 
-  it.only("TC2: Validar iniciar sesión al ingresar datos de un usuario premium", () => {
+  it("TC2: Validar iniciar sesión al ingresar datos de un usuario premium", () => {
     loginPage.createSpecialUser().should("exist").click({ force: true });
     cy.log(`Intentando login con: ${specialUser} / ${specialUserPass}`);
     loginPage.typeEmail(specialUser);

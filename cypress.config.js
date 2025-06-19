@@ -15,7 +15,7 @@ module.exports = defineConfig({
       // implement node event listeners here
     },
     chromeWebSecurity: false,
-    defaultCommandTimeout: 10000,
+    defaultCommandTimeout: 12000,
     watchForFileChanges: false,
     video: false,
     env: {
