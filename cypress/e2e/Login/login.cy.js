@@ -124,7 +124,7 @@ describe(" Module 001 | Login", () => {
   });
 
   it("TC11: Validar NO iniciar sesión al ingresar el campo password sin coincidir", () => {
-    loginPage.createSpecialUser();
+    loginPage.createSpecialUser().should("exist").click({ force: true });
     loginPage.typeEmail(adminUser);
     loginPage.typePassword(specialUserPass);
     loginPage.sendCredentials();
