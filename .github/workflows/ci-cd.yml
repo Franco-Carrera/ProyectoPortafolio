@@ -30,7 +30,12 @@ jobs:
           echo "SPECIAL_USER=${{ secrets.SPECIAL_USER }}" >> $GITHUB_ENV
           echo "SPECIALUSER_PASS=${{ secrets.SPECIALUSER_PASS }}" >> $GITHUB_ENV
 
-      - name: 🚀 Ejecutar pruebas en Cypress
+      - name: 🚀 Ejecutar solo pruebas de login en Cypress
+        if: github.ref == 'refs/heads/test/001/login'
+        run: npx cypress run --spec "cypress/e2e/Login/**/*"
+
+      - name: 🚀 Ejecutar todas las pruebas (otras ramas)
+        if: github.ref != 'refs/heads/test/001/login'
         run: npx cypress run
 
       - name: 📊 Guardar reportes de pruebas
