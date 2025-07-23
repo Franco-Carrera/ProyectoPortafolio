@@ -1,0 +1,25 @@
+{
+  "board": {
+    "boardName": "Mi board",
+    "nameListOne": "My first list!"
+  },
+  "picker": {
+    "dateTomorrow": "2025-07-"
+  },
+  "goals": [
+    {
+      "title": "Definir roadmap Q3",
+      "description": "Planificar tareas clave del siguiente trimestre",
+      "status": "Pendiente",
+      "dueDate": "2025-07-30",
+      "createObjectiveButton": "Crear Objetivo"
+    },
+    {
+      "title": "Preparar onboarding",
+      "description": "Material de bienvenida para nuevos empleados",
+      "status": "Pendiente",
+      "dueDate": "2025-07-15",
+      "createObjectiveButton": "Crear Objetivo"
+    }
+  ]
+}

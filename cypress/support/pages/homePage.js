@@ -1,13 +1,24 @@
 export class HomePage {
   constructor() {
-    this.navLink = "[data-uuid='MJFtCCgVhXrVl7v9HA7EH_login']";
+    this.addListButton = "[data-cy='add-list-button']";
+    this.listInput = "[data-cy='list-title-input']";
+    this.saveListButton = "[data-cy='save-list-button']";
+
+    this.boardInput = "[data-cy='board-title-input']";
+    this.boardButton = "[data-cy='create-board-button']";
   }
 
-  goToLoginSection() {
-    cy.get(this.navLink).click();
+  findHomeTitle() {
+    return cy.contains("Tus Tableros");
   }
 
-  goToTrelloForm() {
-    cy.contains("Obtener Trello gratis").click();
+  typeNameBoard(nameBoard) {
+    cy.get(this.boardInput).type(nameBoard);
   }
+
+  createBoard() {
+    cy.get(this.boardButton).click();
+  }
+
+  //contains e invoke sería bueno meter.
 }
