@@ -1,22 +1,33 @@
 {
   "board": {
     "boardName": "Mi board",
-    "nameListOne": "My first list!"
+    "nameListOne": "My first list!",
+    "nameListTwo": "My List TWO."
   },
   "picker": {
     "dateTomorrow": "2025-07-"
   },
+  "filter": {
+    "currentCount": "(1)",
+    "status": {
+      "inProgress": "(1)",
+      "completed": "(1)"
+    },
+    "date": {
+      "overdue": "Vencidos (1)"
+    }
+  },
   "goals": [
     {
-      "title": "Definir roadmap Q3",
-      "description": "Planificar tareas clave del siguiente trimestre",
+      "title": "Sacar primera canción de género hip hop solo rap",
+      "description": "Preparar estribillo y demas estrófas",
       "status": "Pendiente",
       "dueDate": "2025-07-30",
       "createObjectiveButton": "Crear Objetivo"
     },
     {
-      "title": "Preparar onboarding",
-      "description": "Material de bienvenida para nuevos empleados",
+      "title": "Sacar última canción de género hip hop con trap melódico",
+      "description": "Preparar una intro significativa",
       "status": "Pendiente",
       "dueDate": "2025-07-15",
       "createObjectiveButton": "Crear Objetivo"
