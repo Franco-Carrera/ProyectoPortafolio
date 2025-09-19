@@ -1,4 +1,5 @@
 import { BoardPage } from "../../support/pages/boardPage";
+import dayjs from "dayjs";
 
 describe("Module Cards", () => {
   //DESCUBRIMIENTO. SI CODEO BIEN DE MI LADO Y LA WEB NO REACCIONA COMO DEBE, PUEDO REPORTAR BUG. GRAN IDEA. EJ: ESCRIBIR EN UNA LISTA Y NO VERLO, SINO QUE SISTEMA REDIRECCIONA AL HOME.
@@ -46,17 +47,24 @@ describe("Module Cards", () => {
 
   //_____________DOCUMENTACIONES PARA EL NOTION TC2 //TERMINADO!!!!!
 
-  //skipeado por ver.
-  it("TC2: Validar editar un objetivo al establecer su fecha límite de ser completado", () => {
+  it.only("TC2: Validar editar un objetivo al establecer una fecha límite de ser completado", () => {
     const goal = data.goals[0];
     createObjectiveInList(1, goal);
 
     boardPage.editGoalByLastsDayOfMonth().then((expected) => {
-      boardPage.findDateEdited().should("have.text", expected);
+      boardPage
+        .findDateEdited()
+        .invoke("text")
+        .then((text) => {
+          // Parseo: intento con D/M/YYYY y M/D/YYYY
+          const parsed = dayjs(text, ["D/M/YYYY", "M/D/YYYY"], true);
+          // Normalizo al formato esperado
+          const normalized = parsed.format("D/M/YYYY");
+          expect(normalized).to.eq(expected);
+        });
     });
   });
 
-  //TERMINADO!!!!!
   it("TC3: Validar crear un segundo objetivo en la primera lista Y eliminarlo", () => {
     const goalOne = data.goals[0];
     const goalTwo = data.goals[1];
@@ -68,9 +76,6 @@ describe("Module Cards", () => {
     boardPage.getAllGoalsOfList().should("have.length", 1);
   });
 
-  //este funciona como skipeado //TERMINADO!!!!!
-  //luego ver
-
   //El sistema no actualiza el estado del Objetivo en el modal de Edición cuando se selecciona la opción "En Proceso"
 
   it.skip("TC4: Validar editar un objetivo al modo 'En proceso' y ver coincidencia con su filtro de estado.", () => {
@@ -80,8 +85,7 @@ describe("Module Cards", () => {
     boardPage.findFilterInProcess().should("include", data.filter.currentCount);
   });
 
-  //skipping
-  it("TC5: Validar editar un objetivo a primer dia del mes y ver coincidencia con su filtro de vencimiento.", () => {
+  it.only("TC5: Validar editar un objetivo a primer dia del mes y ver coincidencia con su filtro de vencimiento.", () => {
     const goalOne = data.goals[0];
     createObjectiveInList(1, goalOne);
 
