@@ -15,6 +15,10 @@ on:
           - login
           - objetivos
           - all
+      branch:
+        description: "¿En qué rama correr?"
+        required: false
+        default: "main"
 
 jobs:
   cypress-run:
@@ -23,6 +27,8 @@ jobs:
     steps:
       - name: 📥 Checkout del código
         uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.inputs.branch }}
 
       - name: 🔧 Configurar Node.js
         uses: actions/setup-node@v3
@@ -40,18 +46,7 @@ jobs:
           echo "SPECIAL_USER=${{ secrets.SPECIAL_USER }}" >> $GITHUB_ENV
           echo "SPECIALUSER_PASS=${{ secrets.SPECIALUSER_PASS }}" >> $GITHUB_ENV
 
-      # --- Branch conditions ---
-      - name: 🚀 Ejecutar solo pruebas de login en Cypress (rama test/001/login)
-        if: github.ref == 'refs/heads/test/001/login'
-        run: npx cypress run --spec "cypress/e2e/Login/**/*"
-
-      - name: 🚀 Ejecutar solo pruebas de objetivos en Cypress (rama test/002/objetivos)
-        if: github.ref == 'refs/heads/test/002/objetivos'
-        run: npx cypress run --spec "cypress/e2e/Cards/**/*"
-
-      # --- Manual inputs ---
-      - name: 🚀 Ejecutar pruebas seleccionadas (workflow_dispatch)
-        if: github.event_name == 'workflow_dispatch'
+      - name: 🚀 Ejecutar pruebas seleccionadas
         run: |
           if [ "${{ github.event.inputs.suite }}" == "login" ]; then
             npx cypress run --spec "cypress/e2e/Login/**/*"

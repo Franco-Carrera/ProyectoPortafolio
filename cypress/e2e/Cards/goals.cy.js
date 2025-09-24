@@ -1,6 +1,9 @@
 import { BoardPage } from "../../support/pages/boardPage";
 import dayjs from "dayjs";
 
+//Para nuevo día. Faltaría agregar buena opción para correr 2 ramas.
+// Y agregar misma lógica a TC5.
+
 describe("Module Cards", () => {
   //DESCUBRIMIENTO. SI CODEO BIEN DE MI LADO Y LA WEB NO REACCIONA COMO DEBE, PUEDO REPORTAR BUG. GRAN IDEA. EJ: ESCRIBIR EN UNA LISTA Y NO VERLO, SINO QUE SISTEMA REDIRECCIONA AL HOME.
   const boardPage = new BoardPage();
@@ -47,7 +50,7 @@ describe("Module Cards", () => {
 
   //_____________DOCUMENTACIONES PARA EL NOTION TC2 //TERMINADO!!!!!
 
-  it.only("TC2: Validar editar un objetivo al establecer una fecha límite de ser completado", () => {
+  it("TC2: Validar editar un objetivo al establecer una fecha límite de ser completado", () => {
     const goal = data.goals[0];
     createObjectiveInList(1, goal);
 
@@ -85,18 +88,21 @@ describe("Module Cards", () => {
     boardPage.findFilterInProcess().should("include", data.filter.currentCount);
   });
 
-  it.only("TC5: Validar editar un objetivo a primer dia del mes y ver coincidencia con su filtro de vencimiento.", () => {
+  it("TC5: Validar editar un objetivo a primer dia del mes y ver coincidencia con su filtro de vencimiento.", () => {
     const goalOne = data.goals[0];
     createObjectiveInList(1, goalOne);
 
     boardPage.editGoalByFirstDayOfMonth().then((expectedDate) => {
-      boardPage.findDateEdited().should("have.text", expectedDate);
+      boardPage
+        .findDateEdited()
+        .invoke("text")
+        .then((text) => {
+          const parsed = dayjs(text, ["D/M/YYYY", "M/D/YYYY"], true);
+          const normalized = parsed.format("D/M/YYYY");
+          expect(normalized).to.eq(expectedDate);
+        });
     });
 
-    //const expectedDate = boardPage.editGoalByFirstDayOfMonth();
-    //boardPage.findDateEdited().should("have.text", expectedDate);
-
-    //PA LINKEDIN!
     boardPage.findFilterOverdue().should("have.text", data.filter.date.overdue);
   });
 
