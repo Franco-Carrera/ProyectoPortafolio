@@ -5,20 +5,6 @@ on:
     branches:
       - main
   workflow_dispatch:
-    inputs:
-      suite:
-        description: "¿Qué suite ejecutar?"
-        required: true
-        default: "all"
-        type: choice
-        options:
-          - login
-          - objetivos
-          - all
-      branch:
-        description: "¿En qué rama correr?"
-        required: false
-        default: "main"
 
 jobs:
   cypress-run:
@@ -27,8 +13,6 @@ jobs:
     steps:
       - name: 📥 Checkout del código
         uses: actions/checkout@v3
-        with:
-          ref: ${{ github.event.inputs.branch }}
 
       - name: 🔧 Configurar Node.js
         uses: actions/setup-node@v3
@@ -36,7 +20,7 @@ jobs:
           node-version: 18
 
       - name: 📦 Instalar dependencias
-        run: npm install
+        run: npm ci
 
       - name: 🔑 Configurar variables de entorno
         run: |
@@ -46,15 +30,22 @@ jobs:
           echo "SPECIAL_USER=${{ secrets.SPECIAL_USER }}" >> $GITHUB_ENV
           echo "SPECIALUSER_PASS=${{ secrets.SPECIALUSER_PASS }}" >> $GITHUB_ENV
 
-      - name: 🚀 Ejecutar pruebas seleccionadas
-        run: |
-          if [ "${{ github.event.inputs.suite }}" == "login" ]; then
-            npx cypress run --spec "cypress/e2e/Login/**/*"
-          elif [ "${{ github.event.inputs.suite }}" == "objetivos" ]; then
-            npx cypress run --spec "cypress/e2e/Cards/**/*"
-          else
-            npx cypress run
-          fi
+      # Solo pruebas de login en rama login
+      - name: 🚀 Ejecutar solo pruebas de login en Cypress
+        if: github.ref == 'refs/heads/test/001/login'
+        run: npx cypress run --spec "cypress/e2e/Login/**/*"
+
+      # Solo pruebas de objetivos en rama objetivos
+      - name: 🚀 Ejecutar solo pruebas de objetivos en Cypress
+        if: github.ref == 'refs/heads/test/002/goals'
+        run: npx cypress run --spec "cypress/e2e/Cards/**/*"
+
+      # Si no es ninguna de esas ramas → correr todo
+      - name: 🚀 Ejecutar todas las pruebas (otras ramas)
+        if: |
+          github.ref != 'refs/heads/test/001/login' &&
+          github.ref != 'refs/heads/test/002/goals'
+        run: npx cypress run
 
       - name: 📊 Guardar reportes de pruebas
         uses: actions/upload-artifact@v4
