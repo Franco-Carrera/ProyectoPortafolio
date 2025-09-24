@@ -15,7 +15,7 @@ describe(" Module 001 | Login", () => {
 
   beforeEach("Precondiciones", () => {
     cy.visit(Cypress.env("baseUrl"));
-    cy.url().should("contain", "net");
+    cy.url().should("contain", "simple-app-tracking");
     cy.createTestUser(adminUser, adminPass, nameUser);
   });
 
