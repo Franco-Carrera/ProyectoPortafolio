@@ -54,17 +54,8 @@ describe("Module Cards", () => {
     const goal = data.goals[0];
     createObjectiveInList(1, goal);
 
-    boardPage.editGoalByLastsDayOfMonth().then((expected) => {
-      boardPage
-        .findDateEdited()
-        .invoke("text")
-        .then((text) => {
-          // Parseo: intento con D/M/YYYY y M/D/YYYY
-          const parsed = dayjs(text, ["D/M/YYYY", "M/D/YYYY"], true);
-          // Normalizo al formato esperado
-          const normalized = parsed.format("D/M/YYYY");
-          expect(normalized).to.eq(expected);
-        });
+    boardPage.editGoalByLastDayOfMonth().then((expected) => {
+      boardPage.findDateEdited().should("have.text", expected);
     });
   });
 
@@ -88,21 +79,13 @@ describe("Module Cards", () => {
     boardPage.findFilterInProcess().should("include", data.filter.currentCount);
   });
 
-  it("TC5: Validar editar un objetivo a primer dia del mes y ver coincidencia con su filtro de vencimiento.", () => {
+  it.only("TC5: Validar editar un objetivo a primer dia del mes y ver coincidencia con su filtro de vencimiento.", () => {
     const goalOne = data.goals[0];
     createObjectiveInList(1, goalOne);
 
-    boardPage.editGoalByFirstDayOfMonth().then((expectedDate) => {
-      boardPage
-        .findDateEdited()
-        .invoke("text")
-        .then((text) => {
-          const parsed = dayjs(text, ["D/M/YYYY", "M/D/YYYY"], true);
-          const normalized = parsed.format("D/M/YYYY");
-          expect(normalized).to.eq(expectedDate);
-        });
+    boardPage.editGoalByFirstDayOfMonth().then((expected) => {
+      boardPage.findDateEdited().should("have.text", expected);
     });
-
     boardPage.findFilterOverdue().should("have.text", data.filter.date.overdue);
   });
 

@@ -17,24 +17,22 @@ export function fechaMasDias(days = 10) {
   };
 }
 
-export function ultimosDiasMes() {
+//PARA TC2
+export function ultimoDiaMes() {
   const d = new Date();
-  d.setDate(28);
+  const lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0); // último día del mes actual
 
-  //para inputISO
-  const yyyy = d.getFullYear();
-  const mm = String(d.getMonth() + 1).padStart(2, "0");
-  const dd = String(d.getDate()).padStart(2, "0");
-
-  //para assertion
-  const mmFormated = String(d.getMonth() + 1);
+  const yyyy = lastDay.getFullYear();
+  const mm = String(lastDay.getMonth() + 1).padStart(2, "0");
+  const dd = String(lastDay.getDate()).padStart(2, "0");
 
   return {
-    inputISO: `${yyyy}-${mm}-${dd}`, // para <input type="date">
-    displayDMY: `${dd}/${mmFormated}/${yyyy}`, // para el modal (tu UI)
+    inputISO: `${yyyy}-${mm}-${dd}`, // <input type="date">
+    displayDMY: `${dd}/${Number(mm)}/${yyyy}`, // tu UI (sin leading zero en mes)
   };
 }
 
+//PARA TC5
 // 🚀 Nuevo: primer día del mes actual
 export function primerDiaDelMes() {
   const d = new Date();

@@ -1,4 +1,8 @@
-import { ultimosDiasMes } from "../../e2e/utils/dateUtils";
+import {
+  fechaMasDias,
+  ultimoDiaMes,
+  ultimosDiasMes,
+} from "../../e2e/utils/dateUtils";
 import { primerDiaDelMes } from "../../e2e/utils/dateUtils";
 
 export class BoardPage {
@@ -91,7 +95,7 @@ export class BoardPage {
   }
 
   createGoalInList(listIndex, title, description, createGoalButton) {
-    const { inputISO } = ultimosDiasMes();
+    const { inputISO } = fechaMasDias();
 
     cy.get(this.allList)
       .eq(listIndex - 1)
@@ -106,31 +110,17 @@ export class BoardPage {
       });
   }
 
-  /*
-  setDueDate(dateISO) {
-    cy.get(this.objectiveDueDate).then(($input) => {
-      // Cambiar valor en el DOM
-      $input.val(dateISO);
-
-      // Notificar a React que hubo un cambio real
-      $input[0].dispatchEvent(new Event("input", { bubbles: true }));
-      $input[0].dispatchEvent(new Event("change", { bubbles: true }));
-      $input[0].dispatchEvent(new Event("blur", { bubbles: true }));
-    });
-  }
-    */
-
   // ---------- UPDATE
 
   /*------------Dates------------** */
 
-  editGoalByLastsDayOfMonth() {
-    const { inputISO, displayDMY } = ultimosDiasMes();
+  editGoalByLastDayOfMonth() {
+    const { inputISO, displayDMY } = ultimoDiaMes();
     cy.get(this.objectiveMenu).click();
     cy.get(this.editObjectiveItem).click();
     cy.contains("Editar Objetivo").click();
 
-    cy.get(this.dateInput).invoke("val", inputISO).trigger("change");
+    cy.get(this.dateInput).clear().type(inputISO);
     cy.get(this.modalSaveButton).click();
 
     return cy.wrap(displayDMY);
