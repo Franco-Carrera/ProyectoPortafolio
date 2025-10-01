@@ -8,47 +8,80 @@ export function fechaMasDias(days = 10) {
   const mm = String(d.getMonth() + 1).padStart(2, "0");
   const dd = String(d.getDate()).padStart(2, "0");
 
-  //para assertion
-  const mmFormated = String(d.getMonth() + 1);
-
   return {
     inputISO: `${yyyy}-${mm}-${dd}`, // para <input type="date">
-    displayDMY: `${dd}/${mmFormated}/${yyyy}`, // para el modal (tu UI)
   };
 }
 
-//PARA TC2
+//Para TC2
 export function ultimoDiaMes() {
-  const d = new Date();
-  const lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0); // último día del mes actual
+  const now = new Date();
+  const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
 
+  // ISO para el input
   const yyyy = lastDay.getFullYear();
   const mm = String(lastDay.getMonth() + 1).padStart(2, "0");
   const dd = String(lastDay.getDate()).padStart(2, "0");
+  const inputISO = `${yyyy}-${mm}-${dd}`;
 
-  return {
-    inputISO: `${yyyy}-${mm}-${dd}`, // <input type="date">
-    displayDMY: `${dd}/${Number(mm)}/${yyyy}`, // tu UI (sin leading zero en mes)
-  };
+  // Formateo la fecha según el locale
+  const formattedDate = new Intl.DateTimeFormat("default", {
+    year: "numeric",
+    month: "numeric",
+    day: "numeric",
+  }).format(lastDay);
+
+  // Ahora siempre arranco con la fecha
+  let expectedText = formattedDate;
+
+  // Agrego reglas de negocio
+  if (
+    lastDay.getFullYear() === now.getFullYear() &&
+    lastDay.getMonth() === now.getMonth() &&
+    lastDay.getDate() === now.getDate()
+  ) {
+    expectedText = `${formattedDate}(Vencido)`;
+  } else if (
+    lastDay.getFullYear() === now.getFullYear() &&
+    lastDay.getMonth() === now.getMonth() &&
+    lastDay.getDate() === now.getDate() + 1
+  ) {
+    expectedText = `${formattedDate}(Próximo a vencer)`;
+  }
+
+  return { inputISO, expectedText };
 }
 
 //PARA TC5
 // 🚀 Nuevo: primer día del mes actual
 export function primerDiaDelMes() {
-  const d = new Date();
-  d.setDate(1); // siempre el día 1
+  const now = new Date();
+  const fistDay = new Date();
+  fistDay.setDate(1); // siempre el día 1
 
   //AGARRANDO OBJETO DEL DIA ACTUAL SEGUN SUS COMPONENTES PARA DECORARLOS.
-  const yyyy = d.getFullYear();
-  const mm = String(d.getMonth() + 1).padStart(2, "0");
-  const dd = String(d.getDate()).padStart(2, "0"); // será siempre "01"
+  const yyyy = fistDay.getFullYear();
+  const mm = String(fistDay.getMonth() + 1).padStart(2, "0");
+  const dd = String(fistDay.getDate()).padStart(2, "0"); // será siempre "01"
+  const inputISO = `${yyyy}-${mm}-${dd}`;
 
-  //para assertion
-  const mmFormated = String(d.getMonth() + 1);
-  const ddFormated = String(d.getDate());
+  // Formateo la fecha según el locale
+  const formattedDate = new Intl.DateTimeFormat("default", {
+    year: "numeric",
+    month: "numeric",
+    day: "numeric",
+  }).format(fistDay);
 
-  return {
-    inputISO: `${yyyy}-${mm}-${dd}`,
-    displayDMY: `${ddFormated}/${mmFormated}/${yyyy}(Vencido)`,
-  };
+  let expectedText = formattedDate;
+
+  if (
+    fistDay.getFullYear() === now.getFullYear() &&
+    fistDay.getMonth() === now.getMonth() &&
+    fistDay.getDate() === now.getDate()
+  ) {
+    expectedText = `${formattedDate}(Próximo a vencer)`;
+  } else {
+    expectedText = `${formattedDate}(Vencido)`;
+  }
+  return { inputISO, expectedText };
 }

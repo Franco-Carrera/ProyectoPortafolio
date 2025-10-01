@@ -115,7 +115,8 @@ export class BoardPage {
   /*------------Dates------------** */
 
   editGoalByLastDayOfMonth() {
-    const { inputISO, displayDMY } = ultimoDiaMes();
+    const { inputISO, expectedText } = ultimoDiaMes();
+
     cy.get(this.objectiveMenu).click();
     cy.get(this.editObjectiveItem).click();
     cy.contains("Editar Objetivo").click();
@@ -123,21 +124,21 @@ export class BoardPage {
     cy.get(this.dateInput).clear().type(inputISO);
     cy.get(this.modalSaveButton).click();
 
-    return cy.wrap(displayDMY);
+    // Devuelvo el expectedText al test
+    return cy.wrap(expectedText);
   }
 
   editGoalByFirstDayOfMonth() {
-    const { inputISO, displayDMY } = primerDiaDelMes();
+    const { inputISO, expectedText } = primerDiaDelMes();
 
     cy.get(this.objectiveMenu).click();
     cy.get(this.editObjectiveItem).click();
     cy.contains("Editar Objetivo").click();
 
-    //cy.get(this.dateInput).invoke("val", inputISO).trigger("change");
     cy.get(this.dateInput).clear().type(inputISO);
     cy.get(this.modalSaveButton).click();
 
-    return cy.wrap(displayDMY);
+    return cy.wrap(expectedText);
   }
 
   editGoalByState() {
