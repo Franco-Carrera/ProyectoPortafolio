@@ -92,7 +92,8 @@ Durante la implementación de las pruebas, se detectó un bug relacionado con la
 - **Descripción del bug**: Al editar un objetivo y cambiar su estado a "En Proceso" a través del modal de edición, la interfaz no siempre refleja el cambio en los filtros de estado. El contador del filtro "En Proceso" no se incrementa, aunque al recargar la página el estado a veces se muestra correctamente.
 - **Detección**: Se identificó al escribir el `TC4: Validar editar un objetivo al modo 'En proceso' y ver coincidencia con su filtro de estado.`. La aserción `boardPage.findFilterInProcess().should("include", data.filter.currentCount)` fallaba de manera intermitente. El test fue marcado como `.skip` para no bloquear el pipeline mientras se reporta.
 - **Evidencia**:
-  ![alt text](image.png)
+  ![alt text]<img width="1327" height="674" alt="image" src="https://github.com/user-attachments/assets/6875bd11-12b4-4e74-a71b-fadc24370fb7" />
+
 - **Impacto en el usuario final**: Este bug afecta la consistencia de la interfaz y la fiabilidad de los filtros, lo que puede llevar al usuario a tener una percepción incorrecta del estado de sus tareas, disminuyendo la confianza en la aplicación.
 
 ## Integración con CI/CD
