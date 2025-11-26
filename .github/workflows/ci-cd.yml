@@ -23,28 +23,34 @@ jobs:
         run: npm ci
 
       - name: 🔑 Configurar variables de entorno
+        env:
+          BASE_URL: ${{ secrets.BASE_URL }}
+          NORMAL_USER: ${{ secrets.NORMAL_USER }}
+          NORMAL_PASS: ${{ secrets.NORMAL_PASS }}
+          SPECIAL_USER: ${{ secrets.SPECIAL_USER }}
+          SPECIALUSER_PASS: ${{ secrets.SPECIALUSER_PASS }}
         run: |
-          echo "BASE_URL=${{ secrets.BASE_URL }}" >> $GITHUB_ENV
-          echo "NORMAL_USER=${{ secrets.NORMAL_USER }}" >> $GITHUB_ENV
-          echo "NORMAL_PASS=${{ secrets.NORMAL_PASS }}" >> $GITHUB_ENV
-          echo "SPECIAL_USER=${{ secrets.SPECIAL_USER }}" >> $GITHUB_ENV
-          echo "SPECIALUSER_PASS=${{ secrets.SPECIALUSER_PASS }}" >> $GITHUB_ENV
+          echo "BASE_URL=$BASE_URL" >> $GITHUB_ENV
+          echo "NORMAL_USER=$NORMAL_USER" >> $GITHUB_ENV
+          echo "NORMAL_PASS=$NORMAL_PASS" >> $GITHUB_ENV
+          echo "SPECIAL_USER=$SPECIAL_USER" >> $GITHUB_ENV
+          echo "SPECIALUSER_PASS=$SPECIALUSER_PASS" >> $GITHUB_ENV
 
       # Solo pruebas de login en rama login
       - name: 🚀 Ejecutar solo pruebas de login en Cypress
-        if: github.ref == 'refs/heads/test/001/login'
+        if: (github.head_ref == 'test/001/login') || (github.ref_name == 'test/001/login')
         run: npx cypress run --spec "cypress/e2e/Login/**/*"
 
       # Solo pruebas de objetivos en rama objetivos
       - name: 🚀 Ejecutar solo pruebas de objetivos en Cypress
-        if: github.ref == 'refs/heads/test/002/goals'
+        if: (github.head_ref == 'test/002/goals') || (github.ref_name == 'test/002/goals')
         run: npx cypress run --spec "cypress/e2e/Cards/**/*"
 
       # Si no es ninguna de esas ramas → correr todo
       - name: 🚀 Ejecutar todas las pruebas (otras ramas)
         if: |
-          github.ref != 'refs/heads/test/001/login' &&
-          github.ref != 'refs/heads/test/002/goals'
+          (github.head_ref != 'test/001/login' && github.head_ref != 'test/002/goals' && github.head_ref != '') ||
+          (github.ref_name != 'test/001/login' && github.ref_name != 'test/002/goals' && github.head_ref == '')
         run: npx cypress run
 
       - name: 📊 Guardar reportes de pruebas
