@@ -1,21 +1,9 @@
-import { HomePage } from "../../support/pages/homePage";
 import { LoginPage } from "../../support/pages/loginPage";
 
-const { adminUser, adminUserTwo, adminPass } = Cypress.env("user");
-const {
-  inexistentUser,
-  brokeUserOne,
-  brokeUserTwo,
-  brokeUserThree,
-  brokeUserFour,
-  brokeUserSix,
-  brokePasswordOne,
-  brokePasswordTwo,
-  brokePasswordThree,
-} = Cypress.env("notUser");
+const { nameUser, adminUser, adminPass, specialUser, specialUserPass } =
+  Cypress.env("user");
 
 describe(" Module 001 | Login", () => {
-  const homePage = new HomePage();
   const loginPage = new LoginPage();
   let data;
 
@@ -27,157 +15,134 @@ describe(" Module 001 | Login", () => {
 
   beforeEach("Precondiciones", () => {
     cy.visit(Cypress.env("baseUrl"));
-    cy.on("uncaught:exception", (err, runnable) => {
-      // Ignora errores relacionados con Google Analytics
-      if (err.message.includes("ga")) {
-        return false;
-      }
-      return true;
-    });
-    homePage.goToLoginSection();
+    cy.url().should("contain", "simple-app-tracking");
+    cy.createTestUser(adminUser, adminPass, nameUser);
   });
+
+  //Hechos
 
   it("TC1: Validar iniciar sesión al completar de forma válida ambos campos verificando su persistencia", () => {
     loginPage.typeEmail(adminUser);
-    loginPage.sendCredential();
-
-    // 🔍 Esperamos hasta que la URL cambie a Atlassian
-    cy.location("hostname", { timeout: 10000 }).should(
-      "include",
-      "id.atlassian.com"
-    );
-
-    // 🔥 Interactuamos directamente sin `cy.origin()`
+    cy.log(adminUser);
     loginPage.typePassword(adminPass);
-    loginPage.sendCredential();
-
-    loginPage.cancelDobleAuth();
-
-    // ✅ Esperamos a que vuelva a Trello
-    cy.location("hostname", { timeout: 10000 }).should("include", "trello.com");
+    loginPage.sendCredentials();
+    cy.url().should("contain", "/home");
     cy.reload();
-    loginPage.captureTextTrello().should("include", "Trello");
   });
 
-  it("TC2: Validar NO iniciar sesión al dejar el campo email vacío", () => {
-    loginPage.sendCredential();
+  it("TC2: Validar iniciar sesión al ingresar datos de un usuario premium", () => {
+    loginPage.createSpecialUser().should("exist").click({ force: true });
+    cy.log(`Intentando login con: ${specialUser} / ${specialUserPass}`);
+    loginPage.typeEmail(specialUser);
+    loginPage.typePassword(specialUserPass);
+    loginPage.sendCredentials();
+    // Espera a que se redireccione a /home
+    cy.url({ timeout: 15000 }).should("include", "/home");
+  });
+
+  it("TC3: Validar NO iniciar sesión al dejar el campo email vacío", () => {
+    loginPage.typePassword(adminPass);
+    loginPage.sendCredentials();
     loginPage
-      .findEmailErrorText()
+      .findLoginError()
       .should("have.text", data.errorMessage.emailEmpty);
   });
 
-  it("TC3: Validar NO iniciar sesión al ingresar el campo email como inexistente", () => {
-    loginPage.typeEmail(inexistentUser);
-    loginPage.sendCredential();
+  it("TC4: Validar NO iniciar sesión al ingresar el campo email como inexistente", () => {
+    const inexistentEmail = `usuarioFake${Date.now()
+      .toString()
+      .slice(-5)}@mail.com`;
 
-    //assertion que indica que el campo sigue siendo el de email y no paso al de password.
-    loginPage.findUsernameField().should("have.attr", "type", "email");
-  });
-
-  it("TC4: Validar NO iniciar sesión al ingresar el campo email sin el @", () => {
-    loginPage.typeEmail(brokeUserOne);
-    loginPage.sendCredential();
+    loginPage.typeEmail(inexistentEmail);
+    loginPage.typePassword(adminPass);
+    loginPage.sendCredentials();
     loginPage
-      .findValidationMessageForEmail()
-      .should("include", 'Incluye un signo "@"');
+      .findLoginError()
+      .should("have.text", data.errorMessage.inexistentEmail);
   });
 
-  it("TC5: Validar NO iniciar sesión al ingresar el campo email sin el dominio", () => {
-    loginPage.typeEmail(brokeUserTwo);
-    loginPage.sendCredential();
+  it("TC5: Validar NO iniciar sesión al ingresar el campo email sin el @", () => {
+    const invalidEmail = `usuariomail.com`;
+    loginPage.typeEmail(invalidEmail);
+    loginPage.typePassword(adminPass);
+    loginPage.findSubmitButton().should("be.visible").click();
+    // Esperar y validar el error
     loginPage
-      .findValidationMessageForEmail()
-      .should(
-        "include",
-        'El signo "." está colocado en una posición incorrecta'
-      );
+      .findLoginError()
+      .should("exist")
+      .and("have.text", data.errorMessage.withoutFormatEmail);
   });
 
-  it("TC6: Validar NO iniciar sesión al ingresar el campo email con el dominio incompleto", () => {
-    loginPage.typeEmail(brokeUserThree);
-    loginPage.sendCredential();
-    //assertion que indica que el campo sigue siendo el de email y no paso al de password.
-    loginPage.findUsernameField().should("have.attr", "type", "email");
-
-    //###REPORTAR MEJORA DE QUE PODRÍA INDICAR UN MENSAJE DE ERROR LUEGO DE ENVIAR FIELD.
-
-    loginPage.findPasswordField().should("not.be.visible");
-  });
-
-  it("TC9: Validar NO iniciar sesión al ingresar el campo email con caracteres especiales", () => {
-    loginPage.typeEmail(brokeUserFour);
-    loginPage.sendCredential();
-    //atrapar resultado actual. QUeda pendiente.
-    loginPage.findUsernameField().should("have.attr", "type", "email");
-  });
-
-  it("TC10: Validar NO iniciar sesión al ingresar el campo email con espacios en blanco", () => {
-    loginPage.typeEmail(brokeUserSix);
-    loginPage.sendCredential();
-
-    loginPage.findPasswordField().should("not.be.visible");
-
-    //loginPage.findUsernameField().should("have.attr", "type", "email");
-  });
-
-  it("TC11: Validar NO iniciar sesión al dejar el campo password vacío", () => {
-    loginPage.typeEmail(adminUser);
-    loginPage.sendCredential();
-
-    // 🔍 Esperamos hasta que la URL cambie a Atlassian
-    cy.location("hostname", { timeout: 10000 }).should(
-      "include",
-      "id.atlassian.com"
-    );
-
-    loginPage.sendCredential();
-    loginPage.findSubmitButton().should("be.visible");
-  });
-
-  it("TC12: Validar NO iniciar sesión al ingresar el campo password como inexistente", () => {
-    loginPage.typeEmail(adminUser);
-    loginPage.sendCredential();
-
-    // 🔍 Esperamos hasta que la URL cambie a Atlassian
-    cy.location("hostname", { timeout: 10000 }).should(
-      "include",
-      "id.atlassian.com"
-    );
-
-    loginPage.typePassword(brokePasswordOne);
-    loginPage.sendCredential();
-    loginPage.findSubmitButton().should("be.visible");
-  });
-
-  it("TC13: Validar NO iniciar sesión al ingresar el campo password sin coincidir", () => {
-    loginPage.typeEmail(adminUser);
-    loginPage.sendCredential();
-
-    cy.location("hostname", { timeout: 10000 }).should(
-      "include",
-      "id.atlassian.com"
-    );
-
-    loginPage.typePassword(brokePasswordTwo);
-    loginPage.sendCredential();
-
-    loginPage.findFormErrMsg().should("have.text", data.errorMessage.recaptcha);
-  });
-
-  it.only("TC14: Validar NO iniciar sesión al ingresar el campo password con inyecciones SQL", () => {
-    loginPage.typeEmail(adminUserTwo);
-    loginPage.sendCredential();
-
-    cy.location("hostname", { timeout: 10000 }).should(
-      "include",
-      "id.atlassian.com"
-    );
-
-    loginPage.typePassword(brokePasswordThree);
-    loginPage.sendCredential();
-
+  it("TC6: Validar NO iniciar sesión al ingresar el campo email sin la extensión", () => {
+    const invalidEmail = `usuario@mail`;
+    loginPage.typeEmail(invalidEmail);
+    loginPage.typePassword(adminPass);
+    loginPage.sendCredentials();
     loginPage
-      .findFormErrMsg()
-      .should("have.text", data.errorMessage.invalidcredentials);
+      .findLoginError()
+      .should("have.text", data.errorMessage.withoutFormatEmail);
+  });
+
+  it("TC7: Validar NO iniciar sesión al ingresar el campo email con caracteres especiales", () => {
+    const invalidEmail = `usuario528!!@gmail.com`;
+    loginPage.typeEmail(invalidEmail);
+    loginPage.typePassword(adminPass);
+    loginPage.sendCredentials();
+    loginPage
+      .findLoginError()
+      .should("have.text", data.errorMessage.withoutFormatEmail);
+  });
+
+  it("TC8: Validar NO iniciar sesión al ingresar el campo email sin el nombre de usuario", () => {
+    const invalidEmail = `@gmail.com`;
+    loginPage.typeEmail(invalidEmail);
+    loginPage.typePassword(adminPass);
+    loginPage.findSubmitButton().should("be.visible").click();
+    // Esperar y validar el error
+    loginPage
+      .findLoginError()
+      .should("exist")
+      .and("have.text", data.errorMessage.withoutFormatEmail);
+  });
+
+  it("TC9: Validar NO iniciar sesión al dejar el campo password vacío", () => {
+    loginPage.typeEmail(adminUser);
+    loginPage.sendCredentials();
+    loginPage
+      .findLoginError()
+      .should("have.text", data.errorMessage.passwordEmpty);
+  });
+
+  it("TC10: Validar NO iniciar sesión al ingresar el campo password como inexistente", () => {
+    const invalidPassword = `passinexistente`;
+    loginPage.typeEmail(adminUser);
+    loginPage.typePassword(invalidPassword);
+    loginPage.sendCredentials();
+    loginPage
+      .findLoginError()
+      .should("have.text", data.errorMessage.inexistentPassword);
+  });
+
+  it("TC11: Validar NO iniciar sesión al ingresar el campo password sin coincidir", () => {
+    loginPage.createSpecialUser().should("exist").click({ force: true });
+    loginPage.typeEmail(adminUser);
+    loginPage.typePassword(specialUserPass);
+    loginPage.sendCredentials();
+    loginPage
+      .findLoginError()
+      .should("have.text", data.errorMessage.notMatchPassword);
+  });
+
+  it("TC12: Validar NO iniciar sesión al ingresar el campo password con inyecciones SQL", () => {
+    const invalidPassword = `' OR '1'='1
+    ' OR 1=1 --
+    admin' --`;
+
+    loginPage.typeEmail(adminUser);
+    loginPage.typePassword(invalidPassword);
+    loginPage.sendCredentials();
+    loginPage
+      .findLoginError()
+      .should("have.text", data.errorMessage.inexistentPassword);
   });
 });

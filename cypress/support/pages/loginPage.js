@@ -1,63 +1,47 @@
 export class LoginPage {
   constructor() {
-    this.emailField = "[data-testid='username']";
+    //______________________
+    //Login Section
+    this.emailField = "#email";
+    this.passwordField = "[type='password']";
     this.submitButton = "[type='submit']";
-    this.passwordField = "[data-testid='password']";
-    this.logInLink = "[id='already-have-an-account']";
-    this.workspaceComment = "[data-testid='home-team-tab-name']";
-    this.withoutAuthButton = "#mfa-promote-dismiss";
-    this.emailErrorMsg = "[id='username-uid2-error']";
-    this.formErrMsg = "[data-testid='form-error--content']";
+    this.invalidCredentialsMessage = "[data-cy='login-error']";
+    this.specialUserButton = "[data-cy='create-co-domain-user']";
   }
 
-  goToLoginSection() {
-    cy.get(this.logInLink).click();
-  }
+  /// MI NUEVO PROYECTO /-->
+
+  //_____
+  //LOGIN
 
   typeEmail(email) {
-    cy.get(this.emailField, { timeout: 5000 }).type(email);
-  }
-
-  sendCredential() {
-    cy.get(this.submitButton, { timeout: 5000 }).click();
+    cy.get(this.emailField, { timeout: 10000 }).type(email, { delay: 80 });
+    //SE PUEDE USAR DOS VECES LA FUNCIÓN, YA QUE SOLO HAY UN CAMPO DE ESTE TIPO POR SECCIÓN.
   }
 
   typePassword(password) {
-    cy.get(this.passwordField, { timeout: 5000 }).type(password, {
-      delay: 100,
+    cy.get(this.passwordField, { timeout: 10000 }).type(password, {
+      delay: 80,
     });
   }
-  /* aparece en ocasiones*/
-  cancelDobleAuth() {
-    cy.get(this.withoutAuthButton).click();
+
+  sendCredentials() {
+    cy.get(this.submitButton, { timeout: 10000 }).click();
   }
 
-  captureTextTrello() {
-    return cy.get(this.workspaceComment).invoke("text");
-  }
-
-  findEmailErrorText() {
-    return cy.get(this.emailErrorMsg);
-  }
-
-  findUsernameField() {
-    return cy.get(this.emailField, { timeout: 5000 });
-  }
-
-  findPasswordField() {
-    return cy.get(this.passwordField);
+  createSpecialUser() {
+    return cy.get(this.specialUserButton);
   }
 
   findSubmitButton() {
     return cy.get(this.submitButton);
   }
 
-  //obtiene elemento email, saca su foco de él y obtiene mensaje de error.
-  findValidationMessageForEmail() {
-    return cy.get(this.emailField).blur().invoke("prop", "validationMessage");
+  // LOGIN ERROR MESSAGES
+  findLoginError() {
+    return cy.get(this.invalidCredentialsMessage, { timeout: 10000 });
   }
 
-  findFormErrMsg() {
-    return cy.get(this.formErrMsg, { timeout: 10000 });
-  }
+  // ----------------------
+  //---Home
 }
